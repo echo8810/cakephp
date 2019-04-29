@@ -1,0 +1,18 @@
+INSERT INTO users
+(
+name,
+hello_text,
+activated_code,
+activated_status,
+password,
+password_confirmation
+)
+VALUES
+(
+"test2",
+"Hello!!",
+"12345",
+"1",
+"12345a",
+"12345a"
+);
