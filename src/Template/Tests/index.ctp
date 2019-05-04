@@ -1,10 +1,10 @@
 <!-- File: src/Controller/UsersController.php -->
 
-<?php echo $this->Html->css(['user.css']); ?>
+<!--<?php echo $this->Html->css(['test.css']); ?>-->
 
-<h1>Users</h1>
+<h1>Tests</h1>
 
-<?= $this->Html->link('Add Users', ['action' => 'add']) ?>
+<?= $this->Html->link('Add Tests', ['action' => 'add']) ?>
 
 <table>
     <tr>
@@ -15,22 +15,22 @@
         <th>activated_status</th>
     </tr>
 
-    <?php foreach ($users as $user): ?>
+    <?php foreach ($tests as $test): ?>
     <tr>
-        <td><?= $user->name ?></td>
-        <td><?= $user->hello_text ?></td>
-        <td><?= $user->face_picture ?>
-        <?=  $this->Html->image($user->face_picture, array('alt' => '見せられないよ！')); ?>
+        <td><?= $test->name ?></td>
+        <td><?= $test->hello_text ?></td>
+        <td><?= $test->face_picture ?>
+        <?=  $this->Html->image($test->face_picture, array('alt' => '見せられないよ！')); ?>
         </td>
-        <td><?= $user->background_picture ?></td>
-        <td><?= $user->activated_status ?></td>
+        <td><?= $test->background_picture ?></td>
+        <td><?= $test->activated_status ?></td>
 <!--
 *        <td>
 *            <?= $this->Html->link($article->title, ['action' => 'view', $article->id]) ?>
 *        </td>
 -->
         <td>
-            <?= $user->CREATED_TIME->format(DATE_RFC850) ?>
+            <?= $test->CREATED_TIME->format(DATE_RFC850) ?>
         </td>
 <!--
 *        <td>
