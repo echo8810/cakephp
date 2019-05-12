@@ -4,13 +4,13 @@ namespace App\Model\Table;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-class UsersTable extends Table
+class TestsTable extends Table
 {
   public function initialize(array $config)
   {
-    $this->setTable('users');
+    $this->setTable('tests');
     $this->addBehavior('Timestamp');
-
+/*
     // Upload Plugin
     $this->addBehavior('Josegonzalez/Upload.Upload', [
         //最小機能(アップロードのみ)
@@ -31,10 +31,13 @@ class UsersTable extends Table
         'face_picture' => ['keepFilesOnDelete' => false],
         'backgroud_picture' => ['keepFilesOnDelete' => false]
     ]);
-  }
 
+*/
+  }
+/*
   public function validationDefault(Validator $validator)
   {
+
       $validator
           ->notEmpty('name')
           ->requirePresence('name')
@@ -47,6 +50,7 @@ class UsersTable extends Table
 
       return $validator;
   }
+*/
 }
 
 ?>

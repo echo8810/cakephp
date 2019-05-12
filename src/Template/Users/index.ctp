@@ -1,10 +1,15 @@
 <!-- File: src/Controller/UsersController.php -->
-
 <?php echo $this->Html->css(['user.css']); ?>
 
-<h1>Users</h1>
-
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utg-8">
+  <titile>Users</title>
+</head>
 <?= $this->Html->link('Add Users', ['action' => 'add']) ?>
+
+<titile>Users</title>
 
 <table>
     <tr>
@@ -14,15 +19,15 @@
         <th>background_picture</th>
         <th>activated_status</th>
     </tr>
-
     <?php foreach ($users as $user): ?>
     <tr>
         <td><?= $user->name ?></td>
         <td><?= $user->hello_text ?></td>
-        <td><?= $user->face_picture ?>
-        <?=  $this->Html->image($user->face_picture, array('alt' => '見せられないよ！')); ?>
+        <td>
+          <?=$this->Html->build($user->face_picture, array('alt' => '見せられないよ！')); ?>
+        <?= debug($user->face_picture); ?>
+        <?=$this->Html->image($user->face_picture, array('alt' => '見せられないよ！')); ?>
         </td>
-        <td><?= $user->background_picture ?></td>
         <td><?= $user->activated_status ?></td>
 <!--
 *        <td>

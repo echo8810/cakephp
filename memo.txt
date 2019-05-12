@@ -1,18 +1,78 @@
-INSERT INTO users
-(
-name,
-hello_text,
-activated_code,
-activated_status,
-password,
-password_confirmation
-)
-VALUES
-(
-"test2",
-"Hello!!",
-"12345",
-"1",
-"12345a",
-"12345a"
-);
+<?php
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+use Cake\Controller\ComponentRegistry;
+
+/**
+ * ImgProcess component
+ **/
+class ImgProcessComponent extends Component
+{
+    function initialize(array $config) {
+        $this->controller = $this->_registry->getController();
+    }
+
+    //validation適用のため、rquestに img_name, img_ext, img_sizeを詰める
+    function save($request) {
+        $img = $request->data['img'];
+        $ext =  pathinfo($img['name'], PATHINFO_EXTENSION);
+        $name = md5(uniqid(rand(), 1)).'.'.$ext;
+        $request->data['img_ext'] = $ext;
+        $request->data['img_size'] = $img['size'];
+        $request->data['img_name'] = $name;
+    }
+
+    //オリジナルとサムネイル作成
+    function generate($tmp_name, $post) {
+        move_uploaded_file($tmp_name, 'img/'.$post->img_name);
+        $original_file = 'img/'.$post->img_name;;
+        list($original_width, $original_height) = getimagesize($original_file);
+        $thumb_width = 300;
+        $thumb_height = round( $original_height * $thumb_width / $original_width );
+        if($post->img_ext === 'jpg') $original_image = imagecreatefromjpeg($original_file);
+        if($post->img_ext === 'png') $original_image = imagecreatefrompng($original_file);
+        if($post->img_ext === 'gif') $original_image = imagecreatefromgif($original_file);
+        $thumb_image = imagecreatetruecolor($thumb_width, $thumb_height);
+        imagecopyresized($thumb_image, $original_image, 0, 0, 0, 0,
+            $thumb_width, $thumb_height,
+            $original_width, $original_height);
+        if($post->img_ext === 'jpg') imagejpeg($thumb_image, 'img/mini/'.$post->img_name);
+        if($post->img_ext === 'png') imagepng($thumb_image, 'img/mini/'.$post->img_name);
+        if($post->img_ext === 'gif') imagegif($thumb_image, 'img/mini/'.$post->img_name);
+    }
+}
+controllerの修正
+php.src/Controller/PostsController.php
+
+    public function add()
+    {
+        $post = $this->Posts->newEntity();
+        if ($this->request->is('post')) {
+            $post = $this->Posts->patchEntity($post, $this->request->data);
+            if ($this->Posts->save($post)) {
+               //追加(ローカルに保存＆サムネイル生成)-------------------------
+                if(!empty($this->request->data['img']['name'])) {
+                    $this->ImgProcess->generate(
+                        $this->request->data['img']['tmp_name'], $post);
+                }
+               //-------------------------------------------------------
+                $this->Flash->success(__('投稿されました.'));
+                if ($post->resId ===0) return $this->redirect(['action' => 'index']);
+                else                   return $this->redirect($this->referer());
+            } else {
+                //validation errorの表示準備--------------------------------------------
+                if($post->errors()['img_ext'])
+                    $this->Flash->error(__($post->errors()['img_ext']['list']));
+                if($post->errors()['img_size'])
+                    $this->Flash->error(__($post->errors()['img_size']['comparison']));
+                //--------------------------------------------------------------------
+                $this->Flash->error(__('投稿できませんでした. 再度お試し下さい.'));
+                return $this->redirect($this->referer());
+            }
+        }
+        $this->set(compact('post'));
+        $this->set('_serialize', ['post']);
+    }
+~~
+}
